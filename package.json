@@ -1,0 +1,30 @@
+{
+  "name": "mapio",
+  "version": "1.0.0",
+  "description": "Server that compresses OpenStreetMap data to more lightweight form",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bratrio/mapio.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bratrio/mapio/issues"
+  },
+  "homepage": "https://github.com/bratrio/mapio#readme",
+  "dependencies": {
+    "fast-xml-parser": "^3.12.13",
+    "hapi": "^18.1.0",
+    "he": "^1.2.0",
+    "lodash": "^4.17.11",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}
