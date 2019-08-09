@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "mapio",
+  "builds": [
+    {
+      "src": "/src/now.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/dev/(.*)/(.*)/(.*)",
+      "dest": "/src/now.js?zoom=$1&x=$2&y=$3"
+    }
+  ]
+}

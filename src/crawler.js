@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const parser = require('fast-xml-parser');
 const he = require('he');
 const fs = require('fs');
+const path = require('path');
 const _ = require('lodash');
 
 var options = {
@@ -23,7 +24,7 @@ var options = {
 };
 
 const TYPE = { WAY: 'way', BUILDING: 'building', AREA: 'area', UNKNOWN: 'unknown'};
-const TILE_SIZE = 180.0 / Math.pow(2, 14);
+const TILE_SIZE = zoom => 180.0 / Math.pow(2, zoom);
 
 const getType = way => {
   if (way.highway || way.waterway) {
@@ -54,10 +55,27 @@ const getData = (y, x, zoom, isDev = false) => {
   const tile = getTileBBox(x, y, zoom);
   const bbox = [tile.x, tile.y, tile.x + tile.width, tile.y + tile.height].join(',');
 
+  const fileName = 'z' + zoom + 'x' + x + 'y' + y + '.json';
+  const filePath = path.join(__dirname, '..', '/cache/', fileName);
+  console.log('https://www.openstreetmap.org/api/0.6/map?bbox=' + bbox);
+
+  if (fs.existsSync(filePath)) {
+    return JSON.parse(fs.readFileSync(filePath));
+  }
+
+  //return fetch('https://www.openstreetmap.org/api/0.6/map?bbox=' + bbox)
+
   return fetch('https://www.openstreetmap.org/api/0.6/map?bbox=' + bbox)
-  .then(res => res.text())
+  .then(res => {
+    const text = res.text();
+    return text;
+  })
   .then(xml => parser.getTraversalObj(xml, options))
-  .then(obj => parser.convertToJson(obj, options).osm)
+  .then(obj => {
+    const data = parser.convertToJson(obj, options).osm;
+    console.log(data);
+    return data;
+  })
   .then(json => {
     if (!json.node || !json.way) return {};
     const nodes = {};
@@ -88,18 +106,40 @@ const getData = (y, x, zoom, isDev = false) => {
       nds.forEach(nd => {
         node = nodes[nd.attr.ref];
 
-        const x = Math.floor((node.attr.lat - tile.y) / TILE_SIZE * 4096);
-        const y = Math.floor((node.attr.lon - tile.x) / TILE_SIZE * 4096);
+        const x = Math.floor((node.attr.lat - tile.y) / TILE_SIZE(zoom) * 4096);
+        const y = Math.floor((node.attr.lon - tile.x) / TILE_SIZE(zoom) * 4096);
 
         obj.shape.push({x, y});
       });
 
       tmp[type.type].push(obj);
     });
+    /*json.relation.forEach(relation => {
+      const tags = getTagData(relation.tag);
+      const type = getType(tags);
+
+      const members = relation.member || [];
+      members.forEach(member => {
+
+      });
+    });*/
 
     delete tmp.unknown;
 
     return tmp;
+  }).then(json => {
+    fs.writeFile(filePath, JSON.stringify(json), 'ascii', err => {
+      if (err) console.log('Error caching', fileName);
+    });
+
+    return json;
+  })
+  .catch(error => {
+    console.log(error);
+    return {
+      type: "error",
+      message: error,
+    }
   });
 }
 
@@ -122,6 +162,5 @@ const getTileBBox = (x, y, zoomLevel) => {
 module.exports = {
   getData: getData,
   getTileByGeo: getTileByGeo,
-  getTileBBox: getTileBBox,
-  TILE_SIZE: TILE_SIZE
+  getTileBBox: getTileBBox
 };
