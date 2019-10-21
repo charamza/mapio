@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/bratrio/mapio#readme",
   "dependencies": {
+    "@turf/bbox-clip": "^6.0.3",
+    "@turf/turf": "^5.1.6",
     "express": "^4.17.1",
     "fast-xml-parser": "^3.12.13",
     "hapi": "^18.1.0",

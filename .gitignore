@@ -62,3 +62,4 @@ typings/
 
 # cached map outputs
 cache/
+cache-old/
