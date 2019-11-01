@@ -18,14 +18,16 @@
   },
   "homepage": "https://github.com/bratrio/mapio#readme",
   "dependencies": {
+    "@hapi/hapi": "^18.4.0",
     "@turf/bbox-clip": "^6.0.3",
     "@turf/turf": "^5.1.6",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fast-xml-parser": "^3.12.13",
-    "hapi": "^18.1.0",
     "he": "^1.2.0",
-    "helmet": "^3.18.0",
-    "lodash": "^4.17.11",
+    "helmet": "^3.21.2",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.7.7",
     "node-fetch": "^2.3.0"
   },
   "devDependencies": {

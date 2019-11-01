@@ -1,4 +1,4 @@
-const Crawler = require('./crawler');
+const Crawler = require('../services/crawler');
 const { parse } = require("url");
 
 module.exports = async (req, res) => {

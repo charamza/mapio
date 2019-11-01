@@ -3,14 +3,33 @@
   "name": "mapio",
   "builds": [
     {
-      "src": "/src/now.js",
+      "src": "/src/now/map.js",
+      "use": "@now/node"
+    },
+    {
+      "src": "/src/now/leaderboards.js",
+      "use": "@now/node"
+    },
+    {
+      "src": "/src/now/addtime.js",
       "use": "@now/node"
     }
   ],
   "routes": [
     {
+      "src": "/leaderboards/(.*)/add",
+      "dest": "/src/now/addtime.js?track=$1"
+    },
+    {
+      "src": "/leaderboards/(.*)",
+      "dest": "/src/now/leaderboards.js?track=$1"
+    },
+    {
       "src": "/dev/(.*)/(.*)/(.*)",
-      "dest": "/src/now.js?zoom=$1&x=$2&y=$3"
+      "dest": "/src/now/map.js?zoom=$1&x=$2&y=$3"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_STRING": "@mongodb_string"
+  }
 }
